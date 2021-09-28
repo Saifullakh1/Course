@@ -1,0 +1,31 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block content %}
+<main class="login-body" data-vide-bg="assets/img/login-bg.mp4">
+    <!-- Login Admin -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="login-form">
+            <!-- logo-login -->
+            <div class="logo-login">
+                <a href="index.html"><img src="{% static 'assets/img/logo/loder.png' %}" alt=""></a>
+            </div>
+            <h2>Login Here</h2>
+            <div class="form-input">
+                <label for="name">Username</label>
+                <input type="username" name="username" placeholder="Username">
+            </div>
+            <div class="form-input">
+                <label for="name">Password</label>
+                <input type="password" name="password" placeholder="Password">
+            </div>
+            <div class="form-input pt-30">
+                <input type="submit" name="submit" value="login">
+            </div>
+
+            <a href="{% url 'register' %}" class="registration">Registration</a>
+        </div>
+    </form>
+    <!-- /end login form -->
+</main>
+{% endblock %}
