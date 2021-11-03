@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
+    #storages
+    'storages',
+
     # apps
     'apps.courses',
     'apps.categories',
@@ -86,8 +89,12 @@ WSGI_APPLICATION = 'tains.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'DB',
+        'USER': 'Saifullakh',
+        'PASSWORD': '210102',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -149,9 +156,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+AWS_ACCESS_KEY_ID = 'AKIARZV6U7G5SYPLAQJU'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'static-course'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = 'static'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

@@ -24,6 +24,7 @@ class Course(models.Model):
         related_name='course_user',
         null=True
     )
+    favorites = models.ManyToManyField(User, related_name='user_fav', default=None, blank=True)
 
     def get_parent(self):
         return self.comment.filter(parent__isnull=True)
