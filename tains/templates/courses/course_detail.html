@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/slick.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/icona.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/img/avatar.jpg' %}">
 </head>
 
 <body>
@@ -70,102 +72,125 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 posts-list">
-                    <div class="single-post">
-                        <video controls="controls" poster="{{ course.course_media.image.url }}" width="500"
-                               height="500">
-                            <source src="{{ course.course_media.video.url }}" typeof="video/mp4">
-                        </video>
-                        <div class="blog_details">
-                            <h2 style="color: #2d2d2d;">
-                                {{ course.title }}
-                            </h2>
-                            <ul class="blog-info-link mt-3 mb-4">
-                                <li><a href="{% url 'user_profile' course.owner.id %}"><i class="fa fa-user"></i>{{ course.owner }}</a></li>
-                                <li><a href="#"><i class="fa fa-comments"></i> 03 Comments</a></li>
-                            </ul>
-                            <p class="excert">
-                                {{ course.description }}
-                            </p>
-                        </div>
-                        {% if user.is_authenticated and user == course.owner %}
-                        <a href="{{ course.get_update }}" class="genric-btn info-border radius">Update</a>
-                        <a href="{{ course.get_delete }}" class="genric-btn danger-border radius">Delete</a>
-                        {% else %}
-                        {% endif %}
+                    <video loop="loop" controls poster="{{ course.course_media.image.url }}" width="500"
+                           height="500">
+                        <source src="{{ course.course_media.video.url }}" type="video/mp4">
+                    </video>
+                    <div class="blog_details">
+                        <h2 style="color: #2d2d2d;">
+                            {{ course.title }}
+                        </h2>
+                        <ul class="blog-info-link mt-3 mb-4">
+                            <li><a href="{% url 'user_profile' course.owner.id %}"><i class="fa fa-user"></i>{{ course.owner }}</a></li>
+                            <li><a href="#">{{ course.pub_date }}</a></li>
+                        </ul>
+                        <p class="excert">
+                            {{ course.description }}
+                        </p>
                     </div>
+                    {% if user.is_authenticated and user == course.owner %}
+                    <a href="{{ course.get_update }}" class="genric-btn info-border radius">Update</a>
+                    <a href="{{ course.get_delete }}" class="genric-btn danger-border radius">Delete</a>
+                    {% else %}
+                    {% endif %}
                     <div class="navigation-top">
                         <div class="d-sm-flex justify-content-between text-center">
-                            <p class="like-info"><span class="align-middle"><i class="fa fa-heart"></i></span> Lily and
-                                4
-                                people like this</p>
-                            <div class="col-sm-4 text-center my-2 my-sm-0">
-                                <!-- <p class="comment-count"><span class="align-middle"><i class="fa fa-comment"></i></span> 06 Comments</p> -->
-                            </div>
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="like">
+                                {% if user.is_authenticated %}
+                                <button type="submit" class="btn btn-primary">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                         class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                                    </svg>
+                                </button>
+                                {% endif %}
+                                <p><span class="align-middle"></span>
+                                    {{ course.course_like.all.count }}
+                                    people like this</p>
+                            </form>
+                            {% if user.is_authenticated %}
+
+                            {% if fav %}
                             <ul class="social-icons">
-                                <li><a href="https://www.facebook.com/sai4ull"><i class="fab fa-facebook-f"></i></a>
-                                </li>
-                                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                <li><a href="#"><i class="fab fa-dribbble"></i></a></li>
-                                <li><a href="#"><i class="fab fa-behance"></i></a></li>
+                                <a href="{% url 'fav_add' course.slug %}" class="genric-btn danger-border circle">Remove
+                                    favorites</a>
                             </ul>
+                            {% else %}
+                            <ul class="social-icons">
+                                <a href="{% url 'fav_add' course.slug %}" class="genric-btn danger-border circle">Add to
+                                    favorites</a>
+                            </ul>
+                            {% endif %}
+
+                            {% else %}
+                            <ul class="social-icons">
+                                <a href="{% url 'login' %}" class="genric-btn danger-border circle">Add to favorites</a>
+                            </ul>
+                            {% endif %}
                         </div>
-                    </div>
-                    <div class="comments-area">
-                        <h4>{{ course.comment.all.count }}</h4>
-                        {% for comment in course_comment.get_parent %}
-                        <div class="comment-list">
-                            <div class="single-comment justify-content-between d-flex">
-                                <div class="user justify-content-between d-flex">
-                                    <div class="thumb">
-                                        <img src="{% static 'assets/img/blog/comment_1.png' %}" alt="">
-                                    </div>
-                                    <div class="desc">
-                                        <p class="comment">
-                                            {{ comment.text }}
-                                        </p>
-                                        <div class="d-flex justify-content-between">
-                                            <div class="d-flex align-items-center">
-                                                <h5>
-                                                    <a href="#">{{ comment.user }}</a>
-                                                </h5>
-                                                <p class="date">{{ comment.created_comment }}</p>
+                        <div class="navigation-area">
+                            <div class="comments-area">
+                                <h4>{{ course.course_comment.all.count }} Comments</h4>
+                                {% for comment in course.course_comment.all %}
+                                <div class="comment-list">
+                                    <div class="single-comment justify-content-between d-flex">
+                                        <div class="user justify-content-between d-flex">
+                                            <div class="thumb">
+                                                {% if comment.user.image %}
+                                                <img src="{{ comment.user.image.url }}" class="icona" alt="">
+                                                {% else %}
+                                                <img src="{% static 'assets/img/avatar.jpg' %}" alt="">
+                                                {% endif %}
                                             </div>
-                                            <div class="reply-btn">
-                                                <a href="#" class="btn-reply text-uppercase">reply</a>
+                                            <div class="desc">
+                                                <p class="comment">
+                                                    {{ comment.text }}
+                                                </p>
+                                                <div class="d-flex justify-content-between">
+                                                    <div class="d-flex align-items-center">
+                                                        <h5>
+                                                            <a href="{% url 'user_profile' comment.user.id %}">{{ comment.user.username }}</a>
+                                                        </h5>
+                                                        <p class="date">{{ comment.created_comment }}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
+                            {% if user.is_authenticated %}
+                            <div class="comment-form">
+                                <h4>Leave a Comment</h4>
+                                <form class="form-contact comment_form" method="post" id="commentForm">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <input type="hidden" name="comment" value="{{ comment.id }}">
+                                                <textarea class="form-control w-100" name="text" id="comment" cols="30"
+                                                          rows="9"
+                                                          placeholder="Write Comment"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="button button-contactForm btn_1 boxed-btn">Post
+                                            Comment
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            {% else %}
+                            <h4 style="color: red">Login user or Register to send message</h4>
+                            {% endif %}
                         </div>
                     </div>
-                    {% if user.is_authenticated %}
-                    <div class="comment-form">
-                        <h4>Leave a Reply</h4>
-                        <form class="form-contact comment_form" method="post" id="commentForm">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <input type="hidden" name="comment" value="{{ comment.id }}">
-                     <textarea class="form-control w-100" name="text" id="comment" cols="30" rows="9"
-                               placeholder="Write Comment"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <button type="submit" class="button button-contactForm btn_1 boxed-btn">Post Comment
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    {% else %}
-                    <h4 style="color: red">Login user or Register to send message</h4>
-                    {% endif %}
                 </div>
-            </div>
-        </div>
     </section>
     <!-- Blog Area End -->
 </main>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import generic
 from django.forms import inlineformset_factory
+from apps.courses.models import Course
 from apps.categories.models import Category, CategoryImage
 from apps.categories.forms import CategoryForm, CategoryImageForm
 

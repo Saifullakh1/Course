@@ -3,6 +3,7 @@ from django.views import generic
 from django.forms import inlineformset_factory
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.core.paginator import Paginator
 from apps.courses.forms import CourseForm, CourseMediaForm
 from apps.courses.models import Course, CourseMedia, Like
 from apps.categories.models import Category
@@ -10,7 +11,7 @@ from apps.comments.models import Comment
 
 
 class CourseListView(generic.ListView):
-    queryset = Course.objects.all()
+    queryset = Course.objects.all()[:8]
     model = Course
     template_name = 'courses/index.html'
     context_object_name = 'courses'
@@ -27,22 +28,27 @@ class CourseDetailView(generic.DetailView):
 
 
 def course_detail(request, slug):
-    courses = Course.objects.get(slug=slug)
+    course = Course.objects.get(slug=slug)
+
+    fav = bool
+
+    if course.favorites.filter(id=request.user.id).exists():
+        fav = True
+
     if 'comment' in request.POST:
         try:
             text = request.POST.get('text')
-            comment_obj = Comment.objects.create(user=request.user, courses=courses, text=text)
-            return redirect('course_detail', courses.slug)
+            comment_obj = Comment.objects.create(user=request.user, course=course, text=text)
+            return redirect('course_detail', course.slug)
         except:
             print("Error")
-
     if 'like' in request.POST:
         try:
-            like = Like.objects.get(user=request.user, courses=courses)
+            like = Like.objects.get(user=request.user, course=course)
             like.delete()
         except:
-            Like.objects.create(user=request.user, courses=courses)
-    return render(request, 'courses/course_detail.html', {'course': courses})
+            Like.objects.create(user=request.user, course=course)
+    return render(request, 'courses/course_detail.html', locals())
 
 
 class CoursesGallery(generic.ListView):
@@ -70,11 +76,6 @@ class SearchCourse(generic.ListView):
                 Q(title__icontains=qury_obj) | Q(owner__username__icontains=qury_obj)
             )
         return queryset
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['category'] = Category.objects.all()[:8]
-        return context
 
 
 @login_required
@@ -118,4 +119,3 @@ def course_delete(request, slug):
             course.delete()
         return redirect('index')
     return render(request, 'courses/course_delete.html')
-

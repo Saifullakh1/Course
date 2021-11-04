@@ -5,7 +5,7 @@ from apps.courses.models import Course, CourseMedia
 class CourseForm(forms.ModelForm):
     class Meta:
         model = Course
-        exclude = ['slug', 'pub_date', 'owner']
+        exclude = ['slug', 'pub_date', 'owner', 'favorites']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
