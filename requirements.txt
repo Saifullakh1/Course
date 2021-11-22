@@ -15,6 +15,7 @@ django-storages==1.12.3
 django-utils-six==2.0
 idna==3.3
 jmespath==0.10.0
+netcat==0.0.1a0
 oauthlib==3.1.1
 Pillow==8.4.0
 psycopg2-binary==2.9.2
