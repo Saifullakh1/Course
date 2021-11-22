@@ -1,0 +1,23 @@
+{% extends 'users/profile.html' %}
+{% block content %}
+<div class="courses-area section-padding40 fix">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-7 col-lg-8">
+                <div class="section-tittle text-center mb-55">
+                    <h2>Your courses</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            {% for course in user_obj.course_user.all %}
+            <div class="col-lg-4">
+                <div class="properties properties2 mb-30">
+                    {% include 'includes/card.html' %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

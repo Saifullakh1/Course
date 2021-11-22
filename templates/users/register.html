@@ -1,0 +1,27 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% load socialaccount %}
+{% block content %}
+<main class="login-body" data-vide-bg="assets/img/login-bg.mp4">
+    <!-- Login Admin -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="login-form">
+            <!-- logo-login -->
+            <div class="logo-login">
+                <a href="index.html"><img src="{% static 'assets/img/logo/loder.png' %}" alt=""></a>
+            </div>
+            <h2>Registration Here</h2>
+            <div class="form-input">
+                <label>{{ form.as_p }}</label>
+            </div>
+            <div class="form-input pt-30">
+                <input type="submit" name="submit" value="Registration">
+            </div>
+            <!-- Forget Password -->
+            <a href="{% provider_login_url 'google' %}" class="btn btn-danger">Register with google</a>
+        </div>
+    </form>
+    <!-- /end login form -->
+</main>
+{% endblock %}
