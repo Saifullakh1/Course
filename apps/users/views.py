@@ -47,7 +47,7 @@ def favorite_add(request, slug):
 
 def fav_list(request):
     new = Course.objects.filter(favorites=request.user)
-    return render(request, 'courses/like_courses.html', {'new': new})
+    return render(request, 'users/like_courses.html', {'new': new})
 
 
 

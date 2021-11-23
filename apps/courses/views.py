@@ -71,6 +71,11 @@ class SearchCourse(generic.ListView):
             )
         return queryset
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.all()[:8]
+        return context
+
 
 @login_required
 def course_create(request):
